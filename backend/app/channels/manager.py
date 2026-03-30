@@ -35,6 +35,7 @@ CHANNEL_CAPABILITIES = {
     "feishu": {"supports_streaming": True},
     "slack": {"supports_streaming": False},
     "telegram": {"supports_streaming": False},
+    "dingtalk": {"supports_streaming": False},
 }
 
 

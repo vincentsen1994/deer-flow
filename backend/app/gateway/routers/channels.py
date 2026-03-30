@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -50,3 +50,30 @@ async def restart_channel(name: str) -> ChannelRestartResponse:
     else:
         logger.warning("Failed to restart channel %s", name)
         return ChannelRestartResponse(success=False, message=f"Failed to restart channel {name}")
+
+
+@router.post("/dingtalk/webhook")
+async def dingtalk_webhook(request: Request) -> dict[str, Any]:
+    """Handle incoming DingTalk webhook messages."""
+    from app.channels.service import get_channel_service
+
+    service = get_channel_service()
+    if service is None:
+        raise HTTPException(status_code=503, detail="Channel service is not running")
+
+    # Get the channel instance
+    channel = service._channels.get("dingtalk")
+    if channel is None:
+        raise HTTPException(status_code=404, detail="DingTalk channel is not enabled")
+
+    try:
+        # Parse webhook payload
+        payload = await request.json()
+        logger.info("Received DingTalk webhook: %s", payload)
+
+        # Handle the webhook
+        result = await channel.handle_webhook(payload)
+        return result
+    except Exception as e:
+        logger.exception("Error handling DingTalk webhook: %s", e)
+        return {"errcode": 500, "errmsg": "Internal server error"}

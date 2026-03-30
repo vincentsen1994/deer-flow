@@ -1,3 +1,5 @@
+name: deer-flow
+
 # DeerFlow Production Environment
 # Usage: make up
 #
@@ -30,6 +32,7 @@ services:
       - "${PORT:-2026}:2026"
     volumes:
       - ./nginx/${NGINX_CONF:-nginx.conf}:/etc/nginx/nginx.conf:ro
+      - ./nginx/logs:/etc/nginx/logs
     depends_on:
       - frontend
       - gateway

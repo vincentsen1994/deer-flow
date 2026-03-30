@@ -1,3 +1,5 @@
+name: deer-flow
+
 # DeerFlow Development Environment
 # Usage: docker-compose -f docker-compose-dev.yaml up --build
 #
@@ -130,7 +132,7 @@ services:
       - ../skills:/app/skills
       - ../logs:/app/logs
       # Mount uv cache for faster dependency installation
-      - ~/.cache/uv:/root/.cache/uv
+      - ${UV_CACHE_DIR:-~/.cache/uv}:/root/.cache/uv
       # DooD: same as gateway — AioSandboxProvider runs inside LangGraph process.
       - /var/run/docker.sock:/var/run/docker.sock
       # CLI auth directories for auto-auth (Claude Code + Codex CLI)
@@ -185,7 +187,7 @@ services:
       - ../skills:/app/skills
       - ../logs:/app/logs
       # Mount uv cache for faster dependency installation
-      - ~/.cache/uv:/root/.cache/uv
+      - ${UV_CACHE_DIR:-~/.cache/uv}:/root/.cache/uv
       # DooD: same as gateway — AioSandboxProvider runs inside LangGraph process.
       - /var/run/docker.sock:/var/run/docker.sock
       # CLI auth directories for auto-auth (Claude Code + Codex CLI)
